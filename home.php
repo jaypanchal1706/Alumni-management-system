@@ -1,128 +1,164 @@
-<?php 
-include 'admin/db_connect.php'; 
-?>
+<?php include 'db_connect.php' ?>
 <style>
-#portfolio .img-fluid{
-    width: calc(100%);
-    height: 30vh;
-    z-index: -1;
-    position: relative;
-    padding: 1em;
+   span.float-right.summary_icon {
+    font-size: 3rem;
+    position: absolute;
+    right: 1rem;
+    color: #ffffff96;
 }
-.event-list{
-cursor: pointer;
-}
-span.hightlight{
-    background: yellow;
-}
-.banner{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 26vh;
-        width: calc(30%);
-    }
-    .banner img{
-        width: calc(100%);
-        height: calc(100%);
-        cursor :pointer;
-    }
-.event-list{
-cursor: pointer;
-border: unset;
-flex-direction: inherit;
-}
-
-.event-list .banner {
-    width: calc(40%)
-}
-.event-list .card-body {
-    width: calc(60%)
-}
-.event-list .banner img {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    min-height: 50vh;
-}
-span.hightlight{
-    background: yellow;
-}
-.banner{
-   min-height: calc(100%)
-}
+.imgs{
+		margin: .5em;
+		max-width: calc(100%);
+		max-height: calc(100%);
+	}
+	.imgs img{
+		max-width: calc(100%);
+		max-height: calc(100%);
+		cursor: pointer;
+	}
+	#imagesCarousel,#imagesCarousel .carousel-inner,#imagesCarousel .carousel-item{
+		height: 60vh !important;background: black;
+	}
+	#imagesCarousel .carousel-item.active{
+		display: flex !important;
+	}
+	#imagesCarousel .carousel-item-next{
+		display: flex !important;
+	}
+	#imagesCarousel .carousel-item img{
+		margin: auto;
+	}
+	#imagesCarousel img{
+		width: auto!important;
+		height: auto!important;
+		max-height: calc(100%)!important;
+		max-width: calc(100%)!important;
+	}
 </style>
-        <header class="masthead">
-            <div class="container-fluid h-100">
-                <div class="row h-100 align-items-center justify-content-center text-center">
-                    <div class="col-lg-8 align-self-end mb-4 page-title">
-                    	<h3 class="text-white">Welcome to <?php echo $_SESSION['system']['name']; ?></h3>
-                        <hr class="divider my-4" />
 
-                    <div class="col-md-12 mb-2 justify-content-center">
-                    </div>                        
-                    </div>
-                    
-                </div>
-            </div>
-        </header>
-            <div class="container mt-3 pt-2">
-                <h4 class="text-center text-white">Upcoming Events</h4>
-                <hr class="divider">
-                <?php
-                $event = $conn->query("SELECT * FROM events where date_format(schedule,'%Y-%m%-d') >= '".date('Y-m-d')."' order by unix_timestamp(schedule) asc");
-                while($row = $event->fetch_assoc()):
-                    $trans = get_html_translation_table(HTML_ENTITIES,ENT_QUOTES);
-                    unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-                    $desc = strtr(html_entity_decode($row['content']),$trans);
-                    $desc=str_replace(array("<li>","</li>"), array("",","), $desc);
-                ?>
-                <div class="card event-list" data-id="<?php echo $row['id'] ?>">
-                     <div class='banner'>
-                        <?php if(!empty($row['banner'])): ?>
-                            <img src="admin/assets/uploads/<?php echo($row['banner']) ?>" alt="">
-                        <?php endif; ?>
-                    </div>
-                    <div class="card-body">
-                        <div class="row  align-items-center justify-content-center text-center h-100">
-                            <div class="">
-                                <h3><b class="filter-txt"><?php echo ucwords($row['title']) ?></b></h3>
-                                <div><small><p><b><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A",strtotime($row['schedule'])) ?></b></p></small></div>
-                                <hr>
-                                <larger class="truncate filter-txt"><?php echo strip_tags($desc) ?></larger>
-                                <br>
-                                <hr class="divider"  style="max-width: calc(80%)">
-                                <button class="btn btn-primary float-right read_more" data-id="<?php echo $row['id'] ?>">Read More</button>
+<div class="containe-fluid">
+	<div class="row mt-3 ml-3 mr-3">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <?php echo "Welcome back ". $_SESSION['login_name']."!"  ?>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body bg-primary">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"><i class="fa fa-users"></i></span>
+                                        <h4><b>
+                                            <?php echo $conn->query("SELECT * FROM alumnus_bio where status = 1")->num_rows; ?>
+                                        </b></h4>
+                                        <p><b>Alumni</b></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body bg-info">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"><i class="fa fa-comments"></i></span>
+                                        <h4><b>
+                                            <?php echo $conn->query("SELECT * FROM forum_topics")->num_rows; ?>
+                                        </b></h4>
+                                        <p><b>Forum Topics</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body bg-warning">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"><i class="fa fa-briefcase"></i></span>
+                                        <h4><b>
+                                            <?php echo $conn->query("SELECT * FROM careers")->num_rows; ?>
+                                        </b></h4>
+                                        <p><b>Posted jobs</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body bg-primary">
+                                    <div class="card-body text-white">
+                                        <span class="float-right summary_icon"><i class="fa fa-calendar-day"></i></span>
+                                        <h4><b>
+                                            <?php echo $conn->query("SELECT * FROM events where date_format(schedule,'%Y-%m%-d') >= '".date('Y-m-d')."' ")->num_rows; ?>
+                                        </b></h4>
+                                        <p><b>Upcoming Events</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>	
 
-                    </div>
+                    
                 </div>
-                <br>
-                <?php endwhile; ?>
-                
-            </div>
-
-
+            </div>      			
+        </div>
+    </div>
+</div>
 <script>
-     $('.read_more').click(function(){
-         location.href = "index.php?page=view_event&id="+$(this).attr('data-id')
-     })
-     $('.banner img').click(function(){
-        viewer_modal($(this).attr('src'))
-    })
-    $('#filter').keyup(function(e){
-        var filter = $(this).val()
+	$('#manage-records').submit(function(e){
+        e.preventDefault()
+        start_load()
+        $.ajax({
+            url:'ajax.php?action=save_track',
+            data: new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            success:function(resp){
+                resp=JSON.parse(resp)
+                if(resp.status==1){
+                    alert_toast("Data successfully saved",'success')
+                    setTimeout(function(){
+                        location.reload()
+                    },800)
 
-        $('.card.event-list .filter-txt').each(function(){
-            var txto = $(this).html();
-            txt = txto
-            if((txt.toLowerCase()).includes((filter.toLowerCase())) == true){
-                $(this).closest('.card').toggle(true)
-            }else{
-                $(this).closest('.card').toggle(false)
-               
+                }
+                
             }
         })
     })
+    $('#tracking_id').on('keypress',function(e){
+        if(e.which == 13){
+            get_person()
+        }
+    })
+    $('#check').on('click',function(e){
+            get_person()
+    })
+    function get_person(){
+            start_load()
+        $.ajax({
+                url:'ajax.php?action=get_pdetails',
+                method:"POST",
+                data:{tracking_id : $('#tracking_id').val()},
+                success:function(resp){
+                    if(resp){
+                        resp = JSON.parse(resp)
+                        if(resp.status == 1){
+                            $('#name').html(resp.name)
+                            $('#address').html(resp.address)
+                            $('[name="person_id"]').val(resp.id)
+                            $('#details').show()
+                            end_load()
+
+                        }else if(resp.status == 2){
+                            alert_toast("Unknow tracking id.",'danger');
+                            end_load();
+                        }
+                    }
+                }
+            })
+    }
 </script>

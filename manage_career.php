@@ -1,4 +1,4 @@
-<?php include 'admin/db_connect.php' ?>
+<?php include 'db_connect.php' ?>
 <?php
 if(isset($_GET['id'])){
 	$qry = $conn->query("SELECT * FROM careers where id=".$_GET['id'])->fetch_array();
@@ -20,7 +20,7 @@ if(isset($_GET['id'])){
 		<div class="row form-group">
 			<div class="col-md-8">
 				<label class="control-label">Job Title</label>
-				<input type="text" name="title" class="form-control" value="<?php echo isset($title) ? $title:'' ?>">
+				<input type="text" name="title" class="form-control" value="<?php echo isset($job_title) ? $job_title:'' ?>">
 			</div>
 		</div>
 		<div class="row form-group">
@@ -44,7 +44,7 @@ if(isset($_GET['id'])){
 		e.preventDefault()
 		start_load()
 		$.ajax({
-			url:'admin/ajax.php?action=save_career',
+			url:'ajax.php?action=save_career',
 			method:'POST',
 			data:$(this).serialize(),
 			success:function(resp){

@@ -1,4 +1,4 @@
-<?php include 'admin/db_connect.php' ?>
+<?php include 'db_connect.php' ?>
 <?php
 if(isset($_GET['id'])){
 	$qry = $conn->query("SELECT * FROM forum_topics where id=".$_GET['id'])->fetch_array();
@@ -32,7 +32,7 @@ if(isset($_GET['id'])){
 		e.preventDefault()
 		start_load()
 		$.ajax({
-			url:'admin/ajax.php?action=save_forum',
+			url:'ajax.php?action=save_forum',
 			method:'POST',
 			data:$(this).serialize(),
 			success:function(resp){
